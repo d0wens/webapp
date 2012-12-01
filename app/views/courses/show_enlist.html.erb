@@ -1,0 +1,21 @@
+<% provide(:title, @title) %>
+<div class="row">
+  <aside class="span4">
+    <section>
+      <h1><%= @course.course_name %></h1>
+      <span><%= link_to "view course", @course %></span>
+	</section>
+	<section>
+	  <%= render 'shared/statsincourse' %>
+	</section>
+  </aside>
+  <div class="span8">
+	<h3><%= @title %></h3>
+	<% if @users.any? %>
+	  <ul class="users" %>
+		<%= render @users %>
+	  </ul>
+	  <%= will_paginate @users %>
+	<% end %>
+  </div>
+</div>

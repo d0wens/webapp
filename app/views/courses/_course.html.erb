@@ -1,0 +1,8 @@
+<li>
+  <%= link_to course.course_name, course %>
+  <small> <%= course.semester %></small>
+  <% if current_user.admin? %>
+    | <%= link_to "delete", course, method: :delete,
+									data: { confirm: "Are you sure?" } %>
+  <% end %>
+</li>

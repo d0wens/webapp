@@ -1,0 +1,23 @@
+<% provide(:title, "Edit Assignment") %>
+
+<%= content_for :assignments_edit_links do %>
+  <% if current_user.admin? %>
+    <li>| <%= link_to "Show: #{@assignment.name.inspect}", @assignment %> |</li>
+  <% end %>
+  <% if current_user.admin? %>
+    <li><%= link_to "View Report for: #{@assignment.name.inspect}",
+			report_path(@assignment) %> |</li>
+  <% end %>
+  <% if current_user.admin? %>
+    <li><%= link_to "Destroy: #{@assignment.name.inspect}", @assignment,
+			:class => "delete", :confirm => 'Are you sure?', :method => :delete %></li>
+  <% end %>
+<% end %>
+
+<%= render 'assignments/links' %>
+<div class="center">
+<section id="assignment_partial">
+  <%= markdown "##Editing Assignment: #{@assignment.name}" %>
+  <%= render 'form' %>
+</section>
+</div>

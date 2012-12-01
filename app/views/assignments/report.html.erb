@@ -1,0 +1,63 @@
+<%= title "Assignment Report For: #{@assignment.name}" %>
+<%= content_for :assignment_report_links do %>
+  <% if current_user.admin? %>
+    <li>| <%= link_to "Show: " + @assignment.name.inspect, @assignment %> |</li>
+  <% end %>
+  <% if current_user.admin? %>
+    <li><%= link_to "Edit: " + @assignment.name.inspect, edit_assignment_path(@assignment) %> |</li>
+  <% end %>
+  <% if current_user.admin? %>
+    <li><%= link_to "Destroy: #{@assignment.name.inspect}", @assignment,
+					:class => "delete", :confirm => 'Are you sure?', :method => :delete %></li>
+  <% end %>
+<% end %>
+
+<%= render 'assignments/links' %>
+<div class="center">
+  <section id="assignment_partial">
+    <%= markdown "## Report" %>
+
+    
+          <% User.all.each do |user| %>
+          <% score = Grades.where({:assignment_id => @assignment.id, :user_id => user.id}) %>
+          <% if score.first.nil? %>
+            <%= user.name %> did not do the assignment. <br/>
+            <% next %>
+            <%end%>
+          <br/><br/><br/><br/>
+          <%= user.name %> <br/>
+          <% questionCount = 0 %>
+      <% # make a new row for every question %>
+      <% @assignment.questions.each do |question| %>
+      <tr>
+        <%= question.id %>. <%= question.content.inspect %><br/>
+        
+        <% # make a new row for every questions answer %>
+        <% question.answers.each do |answer| %>
+        <% pointsWorth = question.points %>
+          <% if question.allow_free_response %>
+            <% textArea = Response.where({:question_id => question.id, :user_id => user.id}) %>
+            <%= textArea.first.content%>
+            Correct? <%= check_box score+=pointsWorth%><br/><br/>
+          <% else %>
+           <% textArea = Response.where({:question_id => question.id, :user_id => user.id}) %>
+           <% answerID = textArea.first.answer_id %>
+           <% if answer.correct_ans %> 
+           <% if answerID ==answer.id %>
+              <%= "CORRECT" %> <br/><br/>
+              <% break %>
+            <% else %>
+              Student answered <%=answerID %>.<br/>
+              Correct answer <%=answer.id%>.<br/><br/>
+              <% break %>
+            <% end %>
+          <% end %>
+          <% end %>
+
+        <% end %>
+      </tr>
+      <% end %>
+      STUDENT SCORED <%= score.first.grade %> <br/><br/><br/>
+      <% end %>
+  </section>
+</div>

@@ -1,0 +1,22 @@
+<% if signed_in_user %>
+<nav id="survey_links_nav">
+  <ul>
+    <% if signed_in_user %>
+      <li><%= link_to "Assignments Index", assignments_path %> |</li>
+    <% end %>
+    <% if current_user.admin? %>
+      <li><%= link_to "Create New Assignment", new_assignment_path %></li>
+    <% end %>
+    <% if current_user.admin? %>
+      <%= yield :assignment_edit_links if content_for? :assignment_edit_links %>
+    <% end %>
+    <% if current_user.admin? %>
+      <%= yield :assignment_show_links if content_for? :assignment_show_links %>
+    <% end %>
+    <% if current_user.admin? %>
+      <%= yield :assignment_report_links if content_for? :assignment_report_links %>
+    <% end %>
+  </ul>
+</nav>
+<div class="clear"></div>
+<% end %>

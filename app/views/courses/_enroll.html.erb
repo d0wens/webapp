@@ -1,0 +1,5 @@
+<%= form_for(@course.enrollments.create(user_id: current_user.id),
+			 remote: true) do |f| %>
+  <div><%= f.hidden_field :user_id %></div>
+  <%= f.submit "Enroll", class: "btn btn-large btn-primary" %>
+<% end %>

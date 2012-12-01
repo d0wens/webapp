@@ -1,0 +1,5 @@
+<%= form_for(@course.enrollments.find_by_user_id(current_user),
+			 html: { method: :delete },
+			 remote: true) do |f| %>
+  <%= f.submit "Unenroll", class: "btn btn-large" %>
+<% end %>

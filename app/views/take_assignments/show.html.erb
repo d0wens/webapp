@@ -1,0 +1,108 @@
+<% provide(:title, "Showing Results") %>
+<div class="center">
+  <section id="assignment_partial">
+    <%= markdown "###{yield(:title)}" %>
+    <%= markdown "### Student: #{current_user.name}" %>
+    <%= markdown "### for: #{@assignment.name.inspect}" %>
+    <% exists = false %>
+    <% Grade.all.each do |g| %>
+      <% if g.user_id == current_user.id and g.assignment_id == @assignment.id %>
+        <% exists = true %>
+      <% end %>
+	<% end %>
+    <% if exists == false %>
+      <% user = Grade.create(:user_id => current_user.id, :assignment_id => @assignment.id, :grade => -1) %>
+    <% else %>
+      <% user = Grade.where({:user_id => current_user.id, :assignment_id => @assignment.id}) %>
+    <% end %>
+    <table id="take_assignment_show">
+      <tr><td>
+      <ol>
+        <% if user.instance_of?(ActiveRecord::Relation)%>
+          <% user = user.first %>
+        <% end %>
+        <% if user.grade == -1 %>
+          <% user.grade = 0 %>
+          <% @assignment.questions.each do |question| %>
+            <%= content_tag(:li, label_tag(:question, question.content)) %>
+            <ol>
+              <% question.answers.each do |answer| %>
+                <%= content_tag_for(:li, answer) do %>
+                  <% if question.allow_free_response %>
+                    <br /><br />
+                    <% textArea = Response.where({:question_id => question.id, :user_id => current_user.id}) %>
+                    <%= text_area_tag :content, textArea.first.content, :rows => 3, :cols => 40, :disabled => true %>
+                  <% else %>
+                    <% blah = Response.where({:question_id => question.id, :user_id => current_user.id}) %>
+		            <% if blah.instance_of?(ActiveRecord::Relation)%>
+                      <% blah = blah.first %>
+                    <% end %>
+		            <% unless blah.first.answer_id != answer.id%>
+                      <span class="my-response">
+                        <%= label_tag :answer, answer.content %>
+                        <% if answer.correctAns == true %>
+                          <%= "CORRECT" %>   
+                          <% user.grade += question.points %>
+                          <% user.save %>
+                          <% blah.first.correct = true %>
+                          <% blah.first.save %>
+                        <% else %>
+                          <%= "INCORRECT" %>
+                        <% end %>
+                      </span>
+                    <% else %>
+                      <%= label_tag :answer, answer.content %>
+                      <% if answer.correctAns == true %>
+                        <%= "CORRECT" %>
+                        <% user.grade += question.points %>
+                        <% user.save %>
+                        <% blah.first.correct = true %>
+                        <% blah.first.save %>
+                      <% end %>
+                    <% end %>
+		  
+                  <% end %>
+                <% end %>
+              <% end %>
+            <% end %>
+            </ol>
+<br />
+<% else %>
+  <% @assignment.questions.each do |question| %>
+    <%= content_tag(:li, label_tag(:question, question.content)) %>
+      <ol>
+      <% question.answers.each do |answer| %>
+        <%= content_tag_for(:li, answer) do %>
+          <% if question.allow_free_response %>
+            <br /><br />
+            <% textArea = Response.where({:question_id => question.id, :user_id => current_user.id}) %>
+            <%= text_area_tag :content, textArea.first.content,
+                  :rows => 3, :cols => 40, :disabled => true %>
+          <% else %>
+          <% blah = Response.where({:question_id => question.id, :user_id => current_user.id}) %>
+          <% unless blah.first.answer_id != answer.id%>
+            <span class="my-response">
+              <%= label_tag :answer, answer.content %>
+              <% if answer.correct_ans == true %>
+                <%= "CORRECT" %>   
+              <% else %>
+                <%= "INCORRECT" %>
+              <% end %>
+            </span>
+          <% else %>
+            <%= label_tag :answer, answer.content %>
+            <% if answer.correct_ans == true %>
+              <%= "CORRECT" %>
+            <% end %>
+          <% end %>
+          <% end %>
+        <% end %>
+        <% end %>
+      <% end %>
+  <% end %>
+  </ol>
+  </td></tr>
+</table>
+</section>
+USER SCORE <%= user.grade %> POINTS
+</div>

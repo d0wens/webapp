@@ -1,0 +1,17 @@
+<% provide(:title, @course.course_name) %>
+<div class="row">
+  <aside class="span4">
+    <section>
+      <h1>
+	    <%= @course.course_name %>
+		<%= @course.semester %>
+	  </h1>
+    </section>
+	<section>
+	  <%= render 'shared/statsincourse' %>
+	</section>
+  </aside>
+  <div class="span8">
+    <%= render 'enroll_form' %>
+  </div>
+</div>

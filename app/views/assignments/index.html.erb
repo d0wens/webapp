@@ -1,0 +1,67 @@
+<% provide(:title, "Listing Assignments") %>
+<%= render 'assignments/links' %>
+<div class="center">
+<section id="assignment_partial">
+  <%= markdown "###{yield(:title)}" %>
+<table>
+  <tr>
+    <th>Name <em>(Click to Show)</em></th>
+    <% if current_user.admin? %>
+      <th>Take</th>
+    <% end %>
+    <% if current_user.admin? %>
+      <th>Show Results</th>
+    <% end %>
+    <th>Edit</th>
+    <th>View Report</th>
+    <th>Destroy?</th>
+  </tr>
+  <% for assignment in @assignments %>
+    <tr>
+      <% if current_user.admin? %>
+        <td>
+          <%= link_to assignment.name, assignment %>
+        </td>
+      <% end %>
+      <% if current_user.admin? %>
+        <td>
+          <% unless assignment_completed?(current_user, assignment) %>
+            <%= link_to "Take", take_assignment_path(assignment) %>
+          <% else %>
+            Completed.
+          <% end %>
+        </td>
+      <% end %>
+      <% if current_user.admin? %>
+        <% if assignment_completed?(current_user, assignment) %>
+        <td>
+          <%= link_to "Show Results", take_assignment_path(assignment) %>
+        </td>
+        <% else %>
+        <td>
+          Complete the assignment first
+        </td>
+        <% end %>
+        
+      <% end %>
+      <td>
+        <% if current_user.admin? %>
+          <%= link_to "Edit", edit_assignment_path(assignment) %>
+        <% end %>
+      </td>
+      <td>
+        <% if current_user.admin? %>
+          <%= link_to "View Report", report_path(assignment) %>
+        <% end %>
+      </td>
+      <td>
+        <% if current_user.admin? %>
+          <%= link_to "Destroy", assignment, :class => "delete",
+					:confirm => 'Are you sure?', :method => :delete %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+</section>
+</div>

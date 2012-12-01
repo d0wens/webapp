@@ -1,0 +1,5 @@
+<section id="assignments_list">
+  <% @assignments.each do |assignment| %>
+    <%= link_to assignment.name, assignment_path(assignment.id) %> |
+  <% end %>
+</section>

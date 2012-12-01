@@ -1,0 +1,10 @@
+<% @user ||= current_user %>
+<div class="stats">
+  <a href="<%= taking_user_path(@user) %>">
+	In 
+	<strong id="taking" class="stat">
+	  <%= @user.taking_courses.count %>
+	</strong>
+	courses.
+  </a>
+</div>

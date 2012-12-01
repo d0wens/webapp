@@ -1,0 +1,9 @@
+<% @course %>
+<div class="stats">
+  <a href="<%= enlisters_course_path(@course) %>">
+    <strong id="enlisters" class="stat">
+	  <%= @course.enrolled_users.count %>
+	</strong>
+	students.
+  </a>
+</div>

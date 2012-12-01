@@ -1,0 +1,49 @@
+<% provide(:title, "Showing Assignment") %>
+<%= content_for :assignment_show_links do %>
+  <% if current_user.admin? %>
+    <li>| <%= link_to "Edit: #{@assignment.name.inspect}", edit_assignment_path(@assignment) %> |</li>
+  <% end %>
+  <% if current_user.admin? %>
+    <li><%= link_to "View Report for: #{@assignment.name.inspect}", report_path(@assignment) %> |</li>
+  <% end %>
+  <% if current_user.admin? %>
+    <li><%= link_to "Destroy: #{@assignment.name.inspect}", @assignment, :class => "delete", :confirm => 'Are you sure?', :method => :delete %></li>
+  <% end %>
+<% end %>
+
+<%= render 'assignments/links' %>
+
+<div class="center">
+  <section id="assignment_partial">
+  <%= markdown "##Showing Assignment: #{@assignment.name.inspect}" %>
+  <table id="show_assignment">
+    <tr>
+      <td>
+      <ol>
+        <% @assignment.questions.each do |question| %>
+        <%= content_tag(:li, label_tag(:question, question.content.inspect)) %>
+          <ol>
+            <% if question.allow_free_response %>
+            <strong><%= t('assignments.questions.allow_free_response') %></strong>
+            <% else %>
+            <% question.answers.each do |answer| %>
+              <%= content_tag_for(:li, answer) do %>
+                <%= label_tag :answer, answer.content.inspect %>
+              <% end %>
+            <% end %>
+          <% end %>
+          </ol>
+          <br />
+        <% end %>
+        </ol>
+      </td>
+    </tr>
+
+    <tr>
+      <td><%= markdown "**Published?: #{@assignment.published}**" %></td>
+      <td><%= markdown "**Due On:  #{@assignment.due_date}**" %></td>
+      <td><%= markdown "**Anonymous?: #{@assignment.anonymous}**" %></td>
+    </tr>
+  </table>
+  </section>
+</div>
